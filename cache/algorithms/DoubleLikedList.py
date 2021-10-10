@@ -1,89 +1,44 @@
-class LRUCache():
-    def _add_node(self, node):
-        """
-        Always add the new node right after head.
-        """
-        node.prev = self.head
-        node.next = self.head.next
+import DoubleLinkedListNode
+from exceptions import InvalidElementException
 
-        self.head.next.prev = node
-        self.head.next = node
 
-    def _remove_node(self, node):
-        """
-        Remove an existing node from the linked list.
-        """
-        prev = node.prev
-        new = node.next
+class DoubleLinkedList():
 
-        prev.next = new
-        new.prev = prev
+    def __init__(self):
+        self.__dummyHead = DoubleLinkedListNode(None,  None)
+        self.__dummyTail = DoubleLinkedListNode(None,  None)
 
-    def _move_to_head(self, node):
-        """
-        Move certain node in between to the head.
-        """
-        self._remove_node(node)
-        self._add_node(node)
+        self.__dummyHead.next = self.__dummyTail
+        self.__dummyTail.prev = self.__dummyHead
 
-    def _pop_tail(self):
-        """
-        Pop the current tail.
-        """
-        res = self.tail.prev
-        self._remove_node(res)
-        return res
+    def detachNode(self, node: DoubleLinkedListNode):
+        if node != None:
+            node.prev.next = node.next
+            node.next.prev = node.prev
 
-    def __init__(self, capacity):
-        """
-        :type capacity: int
-        """
-        self.cache = {}
-        self.size = 0
-        self.capacity = capacity
-        self.head, self.tail = DLinkedNode(), DLinkedNode()
+    def addNodeAtLast(self, node: DoubleLinkedListNode):
+        tailPrev = self.__dummyTail.prev
+        tailPrev.next = node
+        node.next = self.__dummyTail
+        self.__dummyTail.prev = node
+        node.prev = tailPrev
 
-        self.head.next = self.tail
-        self.tail.prev = self.head
+    def addElementAtLast(self, key, value):
+        if key == None or value == None:
+            raise InvalidElementException('Invalid element')
+        newNode = DoubleLinkedListNode(key, value)
+        self.addNodeAtLast(newNode)
+        return newNode
 
-    def get(self, key):
-        """
-        :type key: int
-        :rtype: int
-        """
-        node = self.cache.get(key, None)
-        if not node:
-            return -1
+    def isItemPresent():
+        return self.__dummyHead.next != self.__dummyTail
 
-        # move the accessed node to the head;
-        self._move_to_head(node)
+    def getFirstNode():
+        if not self.isItemPresent():
+            return None
+        return self.__dummyHead.next
 
-        return node.value
-
-    def put(self, key, value):
-        """
-        :type key: int
-        :type value: int
-        :rtype: void
-        """
-        node = self.cache.get(key)
-
-        if not node:
-            newNode = DLinkedNode()
-            newNode.key = key
-            newNode.value = value
-
-            self.cache[key] = newNode
-            self._add_node(newNode)
-
-            self.size += 1
-
-            if self.size > self.capacity:
-                # pop the tail
-                tail = self._pop_tail()
-                del self.cache[tail.key]
-                self.size -= 1
-        else:
-            # update the value.
-            node.value = value
-            self._move_to_head(node)
+    def getLastNode():
+        if not self.isItemPresent():
+            return None
+        return self.__dummyTail.prev

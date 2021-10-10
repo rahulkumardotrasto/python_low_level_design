@@ -1,6 +1,6 @@
-class DLinkedNode():
-    def __init__(self):
-        self.key = 0
-        self.value = 0
+class DooubleLinkedListNode():
+    def __init__(self,  key, value):
+        self.key = key
+        self.value = value
         self.prev = None
         self.next = None
